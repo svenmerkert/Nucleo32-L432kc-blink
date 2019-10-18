@@ -1,0 +1,3 @@
+[submodule "stm32core"]
+	path = stm32core
+	url = git@github.com:condo4/stm32core.git

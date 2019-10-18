@@ -1,0 +1,5 @@
+binary.bin
+binary.elf
+binary.hex
+blink.d
+generated.stm32l432kc.ld
