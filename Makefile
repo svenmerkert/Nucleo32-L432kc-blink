@@ -1,9 +1,11 @@
-PROJECT    = knx1wprobe
+PROJECT    = Blink
 BOARD      = nucleo-stm32l432
 CORE_DIR   = stm32core
 CFLAGS    += -Os -ggdb3
 CFLAGS    += -I./
 OBJS      += ./blink.o
+
+#USE_FREERTOS = true
 
 include stm32core/setup.mk
 
