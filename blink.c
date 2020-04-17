@@ -23,7 +23,8 @@
 #include <libopencm3/stm32/gpio.h>
 //#include <FreeRTOS.h>
 //#include <task.h>
-#include <init.h>
+#include <board_config.h>
+#include <console.h>
 
 extern uint64_t millis();
 
@@ -41,10 +42,10 @@ int main(void)
 {
 	uint32_t ii;
 	uint32_t xx;
-	clock_setup();
-	gpio_setup();
-	usart_setup();
-	systick_setup(1000); /* systick 1 ms */
+	board_setup();
+	gpio_mode_setup(LED_USER_PORT, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, LED_USER_PIN);
+	console_setup();
+	//systick_setup(1000); /* systick 1 ms */
 
 	//xTaskCreate(vLedFlash, (const char *) "vLedFlash", 256, NULL, tskIDLE_PRIORITY + 1, NULL);
 
