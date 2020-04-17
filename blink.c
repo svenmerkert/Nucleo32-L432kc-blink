@@ -16,27 +16,29 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 #include <errno.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <libopencm3/stm32/gpio.h>
-//#include <FreeRTOS.h>
-//#include <task.h>
+#ifdef FREERTOS
+#include <FreeRTOS.h>
+#include <task.h>
+#endif
 #include <board_config.h>
 #include <console.h>
 
 extern uint64_t millis();
-
+#ifdef FREERTOS
 void vLedFlash(void *dummy)
 {
     printf("Enter task\n");
 	while (1) {
-		//printf("tick: %llu\n", systick_get_value());
+		printf("tick: %llu\n", millis());
 		gpio_toggle(LED_USER_PORT, LED_USER_PIN);
-		//vTaskDelay(100 / portTICK_RATE_MS);
+		vTaskDelay(1000 / portTICK_RATE_MS);
 	}
 }
+#endif
 #define DELAY_1MS	10000
 int main(void)
 {
@@ -45,31 +47,30 @@ int main(void)
 	board_setup();
 	gpio_mode_setup(LED_USER_PORT, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, LED_USER_PIN);
 	console_setup();
-	//systick_setup(1000); /* systick 1 ms */
+#ifdef FREERTOS
 
-	//xTaskCreate(vLedFlash, (const char *) "vLedFlash", 256, NULL, tskIDLE_PRIORITY + 1, NULL);
-
+	xTaskCreate(vLedFlash, (const char *) "vLedFlash", 256, NULL, tskIDLE_PRIORITY + 1, NULL);
+#endif
 	printf("Start Scheduler\n");
 
-	//vTaskStartScheduler();
+#ifdef FREERTOS
+	vTaskStartScheduler();
+	while(1);
+#else
 	while (1)
 	{
         for(ii=0;ii<DELAY_1MS*100;ii++)
         {
         	asm("");
         }
-		//lastsystick_get_value();
-
-		//gpio_toggle(LED_USER_PORT, LED_USER_PIN);
 		gpio_set(LED_USER_PORT, LED_USER_PIN);
-		//printf("tick: %llu\n", xx);
 		for(ii=0;ii<DELAY_1MS*100;ii++)
 		{
 			asm("");
 		}
 		gpio_clear(LED_USER_PORT, LED_USER_PIN);
-		//systick_get_value();
-		//vTaskDelay(100 / portTICK_RATE_MS);
+
 	}
+#endif
 	return 0;
 }

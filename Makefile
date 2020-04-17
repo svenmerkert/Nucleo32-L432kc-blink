@@ -5,7 +5,11 @@ CFLAGS    += -Os -ggdb3
 CFLAGS    += -I./
 OBJS      += ./blink.o
 
-#WITH_FREERTOS = true
+WITH_FREERTOS = true
+
+ifdef WITH_FREERTOS
+CFLAGS    += -DFREERTOS
+endif
 
 include stm32core/setup.mk
 
